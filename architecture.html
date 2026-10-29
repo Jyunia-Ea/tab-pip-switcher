@@ -1,0 +1,182 @@
+<html style="margin:0;padding:0;">
+<title>Tab PiP Studio 扩展架构与交互流程</title>
+<div style="width:100%;box-sizing:border-box;background:#f8fafc;padding:10px 6px;font-family:system-ui,'PingFang SC','Microsoft YaHei',sans-serif;">
+  <div style="max-width:1240px;margin:0 auto;">
+    <svg viewBox="0 0 1240 920" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:auto;display:block;">
+      <defs>
+        <marker id="arr" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto">
+          <path d="M0,0 L10,5 L0,10 z" fill="#334155"/>
+        </marker>
+        <marker id="arrB" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto">
+          <path d="M0,0 L10,5 L0,10 z" fill="#2563eb"/>
+        </marker>
+        <marker id="arrV" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto">
+          <path d="M0,0 L10,5 L0,10 z" fill="#7c3aed"/>
+        </marker>
+      </defs>
+
+      <!-- 标题 -->
+      <text x="40" y="30" font-size="21" font-weight="700" fill="#0f172a">Tab PiP Studio 扩展架构与交互流程</text>
+      <text x="40" y="52" font-size="13" fill="#64748b">基于 Manifest V3 + Document Picture-in-Picture API · Chrome / Edge ≥ 116 · Windows / macOS 通用</text>
+
+      <!-- 图例 -->
+      <g font-size="12">
+        <rect x="880" y="18" width="14" height="14" rx="4" fill="#059669"/>
+        <text x="900" y="29" fill="#334155">触发入口</text>
+        <rect x="980" y="18" width="14" height="14" rx="4" fill="#0f172a"/>
+        <text x="1000" y="29" fill="#334155">后台编排</text>
+        <rect x="1072" y="18" width="14" height="14" rx="4" fill="#2563eb"/>
+        <text x="1092" y="29" fill="#334155">hub 模式</text>
+        <rect x="1152" y="18" width="14" height="14" rx="4" fill="#7c3aed"/>
+        <text x="1172" y="29" fill="#334155">dom 模式</text>
+      </g>
+      <text x="880" y="46" font-size="12" fill="#d97706">■ 规范事实（设计依据）</text>
+
+      <!-- 入口层 -->
+      <g>
+        <rect x="30" y="80" width="220" height="72" rx="10" fill="#ecfdf5" stroke="#059669" stroke-width="1.4"/>
+        <text x="140" y="103" font-size="14" font-weight="700" fill="#065f46" text-anchor="middle">快捷键</text>
+        <text x="140" y="122" font-size="12" fill="#166534" text-anchor="middle">Alt+Shift+P / ← / → / Q</text>
+        <text x="140" y="139" font-size="11" fill="#64748b" text-anchor="middle">chrome.commands → 后台</text>
+
+        <rect x="270" y="80" width="220" height="72" rx="10" fill="#ecfdf5" stroke="#059669" stroke-width="1.4"/>
+        <text x="380" y="103" font-size="14" font-weight="700" fill="#065f46" text-anchor="middle">工具栏 popup</text>
+        <text x="380" y="122" font-size="12" fill="#166534" text-anchor="middle">控制台 / 启动 / 镜像 / 关闭</text>
+        <text x="380" y="139" font-size="11" fill="#64748b" text-anchor="middle">全部标签列表，逐条操作</text>
+
+        <rect x="510" y="80" width="220" height="72" rx="10" fill="#ecfdf5" stroke="#059669" stroke-width="1.4"/>
+        <text x="620" y="103" font-size="14" font-weight="700" fill="#065f46" text-anchor="middle">标签页右键菜单</text>
+        <text x="620" y="122" font-size="12" fill="#166534" text-anchor="middle">在画中画小窗中显示此标签</text>
+        <text x="620" y="139" font-size="11" fill="#64748b" text-anchor="middle">镜像 / 关闭画中画</text>
+
+        <rect x="750" y="80" width="220" height="72" rx="10" fill="#ecfdf5" stroke="#059669" stroke-width="1.4"/>
+        <text x="860" y="103" font-size="14" font-weight="700" fill="#065f46" text-anchor="middle">控制台页按钮</text>
+        <text x="860" y="122" font-size="12" fill="#166534" text-anchor="middle">“启动画中画窗口”</text>
+        <text x="860" y="139" font-size="11" fill="#64748b" text-anchor="middle">真实点击 = 规范手势</text>
+
+        <rect x="990" y="80" width="220" height="72" rx="10" fill="#ecfdf5" stroke="#059669" stroke-width="1.4"/>
+        <text x="1100" y="103" font-size="14" font-weight="700" fill="#065f46" text-anchor="middle">页面悬浮按钮</text>
+        <text x="1100" y="122" font-size="12" fill="#166534" text-anchor="middle">右下角「画中画」（每页注入）</text>
+        <text x="1100" y="139" font-size="11" fill="#64748b" text-anchor="middle">真实点击 = 规范手势</text>
+      </g>
+
+      <!-- 入口 → 后台 -->
+      <g fill="none" stroke="#334155" stroke-width="1.6" marker-end="url(#arr)">
+        <line x1="140" y1="152" x2="140" y2="196"/>
+        <line x1="380" y1="152" x2="380" y2="196"/>
+        <line x1="620" y1="152" x2="620" y2="196"/>
+        <line x1="860" y1="152" x2="860" y2="196"/>
+        <line x1="1100" y1="152" x2="1100" y2="196"/>
+      </g>
+
+      <!-- 后台 Service Worker -->
+      <rect x="40" y="196" width="1160" height="150" rx="14" fill="#0f172a"/>
+      <text x="620" y="219" font-size="15" font-weight="700" fill="#ffffff" text-anchor="middle">后台 Service Worker —— 状态机 · 编排 · 生命周期兜底</text>
+
+      <g font-size="11.5" fill="#e2e8f0">
+        <rect x="60" y="232" width="540" height="46" rx="8" fill="#1e293b" stroke="#334155"/>
+        <text x="330" y="252" text-anchor="middle" font-weight="700" font-size="12.5">state：mode = 'hub' ｜ 'dom'（互斥）</text>
+        <text x="330" y="269" text-anchor="middle">storage.session 持久化，SW 重启不丢</text>
+
+        <rect x="620" y="232" width="560" height="46" rx="8" fill="#1e293b" stroke="#334155"/>
+        <text x="900" y="252" text-anchor="middle" font-weight="700" font-size="12.5">编排 hub</text>
+        <text x="900" y="269" text-anchor="middle">激活控制台页 → executeScript(world:MAIN, userGesture) → autoStart()</text>
+
+        <rect x="60" y="288" width="540" height="46" rx="8" fill="#1e293b" stroke="#334155"/>
+        <text x="330" y="308" text-anchor="middle" font-weight="700" font-size="12.5">编排 dom</text>
+        <text x="330" y="325" text-anchor="middle">激活目标标签 → executeScript(world:ISOLATED, userGesture) → __tpip.start()</text>
+
+        <rect x="620" y="288" width="560" height="46" rx="8" fill="#1e293b" stroke="#334155"/>
+        <text x="900" y="308" text-anchor="middle" font-weight="700" font-size="12.5">生命周期兜底</text>
+        <text x="900" y="325" text-anchor="middle">tabs.onRemoved 清理状态；PiP 随打开者关闭/导航自动关闭（规范）</text>
+      </g>
+
+      <!-- 后台 → 两个模式 -->
+      <g fill="none" stroke-width="1.6" marker-end="url(#arrB)">
+        <line x1="300" y1="346" x2="300" y2="384" stroke="#2563eb"/>
+      </g>
+      <g fill="none" stroke-width="1.6" marker-end="url(#arrV)">
+        <line x1="900" y1="346" x2="900" y2="384" stroke="#7c3aed"/>
+      </g>
+      <text x="308" y="372" font-size="11" fill="#2563eb">注入 autoStart()，userGesture 尽力模拟手势</text>
+      <text x="908" y="372" font-size="11" fill="#7c3aed">注入 __tpip.start()，userGesture 尽力模拟手势</text>
+
+      <!-- 模式 A：hub -->
+      <rect x="40" y="384" width="560" height="66" rx="10" fill="#eff6ff" stroke="#2563eb" stroke-width="1.6"/>
+      <text x="320" y="408" font-size="14" font-weight="700" fill="#1d4ed8" text-anchor="middle">模式 A · 画中画台（hub）—— 快速切换 / 跟随</text>
+      <text x="320" y="428" font-size="12" fill="#475569" text-anchor="middle">扩展页 pip-console.html：标签列表 · 搜索 · 尺寸设置 · 跟随开关</text>
+
+      <g fill="none" stroke="#2563eb" stroke-width="1.6" marker-end="url(#arrB)">
+        <line x1="320" y1="450" x2="320" y2="486"/>
+      </g>
+      <text x="330" y="472" font-size="11" fill="#2563eb">requestWindow({width,height}) —— 需用户手势</text>
+
+      <rect x="40" y="486" width="560" height="166" rx="10" fill="#0f172a" stroke="#2563eb" stroke-width="1.6"/>
+      <text x="320" y="508" font-size="13" font-weight="700" fill="#ffffff" text-anchor="middle">PiP 窗口（与打开者同源，about:blank 文档）</text>
+      <rect x="60" y="520" width="520" height="42" rx="8" fill="#1e293b" stroke="#334155"/>
+      <text x="320" y="537" font-size="11.5" fill="#e2e8f0" text-anchor="middle">工具条：‹ 上一个 ｜ ▾ 标签选择 ｜ 下一个 › ｜ 跟随:开/关 ｜ ×</text>
+      <text x="320" y="553" font-size="11" fill="#94a3b8" text-anchor="middle">按钮回调运行在“打开者”上下文（规范机制），跨同源文档直接驱动</text>
+      <rect x="60" y="572" width="340" height="66" rx="8" fill="#1e293b" stroke="#334155"/>
+      <text x="230" y="596" font-size="12.5" font-weight="700" fill="#93c5fd" text-anchor="middle">iframe 预览</text>
+      <text x="230" y="615" font-size="11" fill="#e2e8f0" text-anchor="middle">src = 所选标签 URL（可跨域）</text>
+      <text x="230" y="630" font-size="11" fill="#94a3b8" text-anchor="middle">原标签完全不受影响</text>
+      <rect x="412" y="572" width="168" height="66" rx="8" fill="#1e293b" stroke="#334155"/>
+      <text x="496" y="596" font-size="12.5" font-weight="700" fill="#93c5fd" text-anchor="middle">标签 1 … 标签 N</text>
+      <text x="496" y="615" font-size="11" fill="#e2e8f0" text-anchor="middle">切换 = 改 iframe.src</text>
+      <text x="496" y="630" font-size="11" fill="#94a3b8" text-anchor="middle">瞬时完成（来回切换）</text>
+      <text x="40" y="672" font-size="12" fill="#1d4ed8">跟随当前标签：tabs.onActivated → 自动 setTab —— 切屏/切应用场景核心</text>
+      <text x="40" y="694" font-size="12" fill="#64748b">嵌入检测：HEAD 查 X-Frame-Options / CSP frame-ancestors；禁止 → 标题占位面板 + 「仍尝试嵌入」</text>
+
+      <!-- 模式 B：dom -->
+      <rect x="640" y="384" width="560" height="66" rx="10" fill="#f5f3ff" stroke="#7c3aed" stroke-width="1.6"/>
+      <text x="920" y="408" font-size="14" font-weight="700" fill="#6d28d9" text-anchor="middle">模式 B · 镜像模式（dom）—— 任何网站可用</text>
+      <text x="920" y="428" font-size="12" fill="#475569" text-anchor="middle">内容脚本：右下角「画中画」悬浮按钮（真实点击 = 规范手势）</text>
+
+      <g fill="none" stroke="#7c3aed" stroke-width="1.6" marker-end="url(#arrV)">
+        <line x1="920" y1="450" x2="920" y2="486"/>
+      </g>
+      <text x="930" y="472" font-size="11" fill="#7c3aed">requestWindow({width,height})</text>
+
+      <rect x="640" y="486" width="560" height="166" rx="10" fill="#0f172a" stroke="#7c3aed" stroke-width="1.6"/>
+      <text x="920" y="508" font-size="13" font-weight="700" fill="#ffffff" text-anchor="middle">PiP 窗口（与打开者同源）</text>
+      <rect x="660" y="520" width="520" height="42" rx="8" fill="#1e293b" stroke="#334155"/>
+      <text x="920" y="537" font-size="11.5" fill="#e2e8f0" text-anchor="middle">工具条：‹ 上一个 ｜ 下一个 › ｜ 返回标签 ｜ ×</text>
+      <text x="920" y="553" font-size="11" fill="#94a3b8" text-anchor="middle">按钮回调在打开者上下文，消息回后台编排切换</text>
+      <rect x="660" y="572" width="340" height="66" rx="8" fill="#1e293b" stroke="#334155"/>
+      <text x="830" y="596" font-size="12.5" font-weight="700" fill="#c4b5fd" text-anchor="middle">内容 = 搬入的 DOM</text>
+      <text x="830" y="615" font-size="11" fill="#e2e8f0" text-anchor="middle">head 样式克隆 + body 子元素整体搬入</text>
+      <text x="830" y="630" font-size="11" fill="#94a3b8" text-anchor="middle">视频继续播放 · 表单/登录态保留</text>
+      <rect x="1012" y="572" width="168" height="66" rx="8" fill="#1e293b" stroke="#334155"/>
+      <text x="1096" y="596" font-size="12.5" font-weight="700" fill="#c4b5fd" text-anchor="middle">源标签 body 搬空</text>
+      <text x="1096" y="615" font-size="11" fill="#e2e8f0" text-anchor="middle">返回时原样移回</text>
+      <text x="1096" y="630" font-size="11" fill="#94a3b8" text-anchor="middle">滚动位置也还原</text>
+      <text x="640" y="672" font-size="12" fill="#6d28d9">上一个/下一个 = 后台编排：恢复当前所有者 → 激活目标标签 → 注入 __tpip.start()</text>
+      <text x="640" y="694" font-size="12" fill="#64748b">固有限制：重度 SPA 新渲染的节点会回流到源标签；此类站点建议改用模式 A</text>
+
+      <!-- 规范事实 -->
+      <text x="40" y="738" font-size="14" font-weight="700" fill="#92400e">规范事实（已核实，构成设计依据）</text>
+      <g font-size="11.5" fill="#92400e">
+        <rect x="40" y="752" width="550" height="70" rx="10" fill="#fffbeb" stroke="#d97706" stroke-width="1.2"/>
+        <text x="52" y="770">· requestWindow() 必须「瞬态用户激活」（真实点击）；</text>
+        <text x="52" y="786">  快捷键路径用 executeScript({userGesture:true}) 尽力模拟，</text>
+        <text x="52" y="802">  个别版本判定不通过时，控制台页会提示直接点按钮（非缺陷）。</text>
+
+        <rect x="620" y="752" width="580" height="70" rx="10" fill="#fffbeb" stroke="#d97706" stroke-width="1.2"/>
+        <text x="632" y="770">· PiP 窗口与打开者同源、类似 window.open 的空白窗口；</text>
+        <text x="632" y="786">  无法导航、无法程序化定位；打开者标签关闭/导航 → PiP 自动关闭，</text>
+        <text x="632" y="802">  因此镜像源标签被关闭时内容随之销毁，无法找回。</text>
+
+        <rect x="40" y="832" width="550" height="70" rx="10" fill="#fffbeb" stroke="#d97706" stroke-width="1.2"/>
+        <text x="52" y="850">· PiP 窗口内 requestFullscreen() 被规范禁用；</text>
+        <text x="52" y="866">  resizeTo/resizeBy 需要窗口内用户手势 → 本扩展不做程序化缩放，</text>
+        <text x="52" y="882">  用户可直接用鼠标拖拽调整窗口大小。</text>
+
+        <rect x="620" y="832" width="580" height="70" rx="10" fill="#fffbeb" stroke="#d97706" stroke-width="1.2"/>
+        <text x="632" y="850">· PiP 窗口内按钮的事件处理器实际运行在“打开者”上下文</text>
+        <text x="632" y="866">  （官方 demo 同款机制，规范 6.12）；本扩展用它实现工具条按钮，</text>
+        <text x="632" y="882">  通过扩展消息回后台完成跨标签编排。</text>
+      </g>
+    </svg>
+  </div>
+</div>
+</html>

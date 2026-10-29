@@ -1,0 +1,22 @@
+/* Tab PiP Studio —— 页面悬浮按钮样式 */
+
+.tpip-fab {
+  position: fixed !important;
+  right: 18px;
+  bottom: 18px;
+  z-index: 2147483647 !important;
+  padding: 8px 14px;
+  border: 1px solid rgba(15, 118, 110, 0.4);
+  border-radius: 999px;
+  background: linear-gradient(135deg, #0f766e, #115e59);
+  color: #ffffff;
+  font: 600 13px/1 system-ui, "PingFang SC", "Microsoft YaHei", sans-serif;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.25);
+  cursor: pointer;
+  opacity: 0.92;
+  transition: opacity 0.15s, transform 0.15s;
+}
+.tpip-fab:hover {
+  opacity: 1;
+  transform: translateY(-1px);
+}

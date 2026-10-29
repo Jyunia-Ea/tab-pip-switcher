@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <title>Tab PiP Studio · 画中画控制台</title>
+  <link rel="stylesheet" href="pip-console.css" />
+</head>
+<body>
+  <header>
+    <div class="head-row">
+      <h1>Tab PiP Studio 画中画控制台</h1>
+      <span id="status" class="status">未启动</span>
+    </div>
+
+    <div class="actions">
+      <button id="btn-start" class="primary">启动画中画窗口</button>
+      <button id="btn-close" disabled>关闭画中画</button>
+      <button id="btn-prev" title="显示上一个标签（Alt+Shift+←）">‹ 上一个</button>
+      <button id="btn-next" title="显示下一个标签（Alt+Shift+→）">下一个 ›</button>
+      <label class="switch">
+        <input type="checkbox" id="follow" />
+        <span>跟随当前标签</span>
+      </label>
+    </div>
+
+    <div class="settings">
+      <label>窗口尺寸
+        <input type="number" id="w" min="320" max="2560" step="10" /> ×
+        <input type="number" id="h" min="240" max="1600" step="10" />
+      </label>
+      <button id="btn-save">保存</button>
+      <span class="hint">下次启动生效；已打开的窗口可直接用鼠标拖拽调整大小。</span>
+    </div>
+  </header>
+
+  <main>
+    <input id="search" type="search" placeholder="搜索标签页（标题 / 网址）…" autocomplete="off" />
+    <ul id="tabs"></ul>
+  </main>
+
+  <script src="pip-console.js"></script>
+</body>
+</html>

@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <title>Tab PiP Studio</title>
+  <link rel="stylesheet" href="popup.css" />
+</head>
+<body>
+  <div class="toolbar">
+    <button id="btn-console" class="primary">打开控制台</button>
+    <button id="btn-start">启动画中画台</button>
+    <button id="btn-mirror-active">镜像当前标签</button>
+    <button id="btn-close">关闭画中画</button>
+  </div>
+
+  <div id="status" class="status">查询状态…</div>
+
+  <label class="follow-row">
+    <input type="checkbox" id="follow" disabled />
+    <span>跟随当前标签（画中画自动镜像你正在看的标签）</span>
+  </label>
+
+  <input id="search" type="search" placeholder="搜索标签页…" autocomplete="off" />
+  <ul id="tabs"></ul>
+
+  <script src="popup.js"></script>
+</body>
+</html>

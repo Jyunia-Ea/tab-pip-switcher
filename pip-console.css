@@ -1,0 +1,199 @@
+/* Tab PiP Studio —— 画中画控制台页样式 */
+
+* { box-sizing: border-box; }
+
+:root {
+  --bg: #f1f5f9;
+  --panel: #ffffff;
+  --ink: #0f172a;
+  --muted: #64748b;
+  --brand: #0f766e;
+  --brand-2: #115e59;
+  --line: #e2e8f0;
+  --danger: #dc2626;
+}
+
+body {
+  margin: 0;
+  padding: 16px 20px 32px;
+  background: var(--bg);
+  color: var(--ink);
+  font: 14px/1.5 system-ui, "PingFang SC", "Microsoft YaHei", sans-serif;
+}
+
+header {
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  padding: 14px 16px;
+  box-shadow: 0 1px 3px rgba(15, 23, 42, 0.06);
+}
+
+.head-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+h1 {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 700;
+}
+
+.status {
+  padding: 2px 10px;
+  border-radius: 999px;
+  background: #f8fafc;
+  color: var(--muted);
+  border: 1px solid var(--line);
+  font-size: 12px;
+  white-space: nowrap;
+}
+.status.on {
+  background: #ecfdf5;
+  color: var(--brand);
+  border-color: #a7f3d0;
+}
+.status.warn {
+  background: #fef2f2;
+  color: var(--danger);
+  border-color: #fecaca;
+}
+
+.actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 12px;
+  flex-wrap: wrap;
+}
+
+button {
+  border: 1px solid var(--line);
+  background: #fff;
+  color: var(--ink);
+  border-radius: 8px;
+  padding: 7px 14px;
+  cursor: pointer;
+  font: inherit;
+  font-weight: 500;
+  transition: background 0.12s, border-color 0.12s;
+}
+button:hover:not(:disabled) { background: #f8fafc; border-color: #cbd5e1; }
+button:disabled { opacity: 0.45; cursor: not-allowed; }
+button.primary {
+  background: linear-gradient(135deg, var(--brand), var(--brand-2));
+  border-color: transparent;
+  color: #fff;
+}
+button.primary:hover:not(:disabled) { filter: brightness(1.06); background: linear-gradient(135deg, var(--brand), var(--brand-2)); }
+
+.switch {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-left: 6px;
+  cursor: pointer;
+  user-select: none;
+}
+
+.settings {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 12px;
+  flex-wrap: wrap;
+  color: var(--muted);
+  font-size: 12px;
+}
+.settings input[type="number"] {
+  width: 76px;
+  padding: 4px 8px;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  font: inherit;
+}
+.settings .hint { opacity: 0.75; }
+
+main {
+  margin-top: 14px;
+}
+
+#search {
+  width: 100%;
+  padding: 9px 12px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  font: inherit;
+  background: var(--panel);
+}
+#search:focus {
+  outline: 2px solid rgba(15, 118, 110, 0.35);
+  border-color: var(--brand);
+}
+
+#tabs {
+  list-style: none;
+  margin: 10px 0 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.tab-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  padding: 8px 10px;
+}
+.tab-item.active {
+  border-color: rgba(15, 118, 110, 0.5);
+  background: #f0fdfa;
+}
+.tab-item .fav {
+  width: 18px;
+  height: 18px;
+  flex: none;
+  object-fit: contain;
+}
+.tab-item .meta {
+  flex: 1;
+  min-width: 0;
+}
+.tab-item .title {
+  font-weight: 600;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.tab-item .url {
+  color: var(--muted);
+  font-size: 12px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.tab-item .btns {
+  display: flex;
+  gap: 6px;
+  flex: none;
+}
+.tab-item .btns button {
+  padding: 4px 10px;
+  font-size: 12px;
+}
+.tab-item .btns button[data-act="hub"] { color: var(--brand); border-color: rgba(15, 118, 110, 0.4); }
+.tab-item .btns button[data-act="mirror"] { color: #7c3aed; border-color: rgba(124, 58, 237, 0.4); }
+
+.empty {
+  padding: 24px;
+  text-align: center;
+  color: var(--muted);
+}

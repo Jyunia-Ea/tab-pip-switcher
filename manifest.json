@@ -1,0 +1,60 @@
+{
+  "manifest_version": 3,
+  "name": "Tab PiP Studio · 标签页画中画切换器",
+  "version": "1.0.0",
+  "description": "基于 Document Picture-in-Picture API：把任意标签页放进常驻最顶层的画中画窗口，用快捷键/按钮来回切换标签页，适配 Windows 与 macOS 上的 Chrome / Edge（≥116）。",
+  "minimum_chrome_version": "116",
+  "permissions": [
+    "tabs",
+    "storage",
+    "scripting",
+    "contextMenus"
+  ],
+  "host_permissions": [
+    "<all_urls>"
+  ],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "action": {
+    "default_title": "Tab PiP Studio",
+    "default_popup": "popup.html",
+    "default_icon": {
+      "16": "icons/icon16.png",
+      "48": "icons/icon48.png",
+      "128": "icons/icon128.png"
+    }
+  },
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": ["content.js"],
+      "css": ["content.css"],
+      "run_at": "document_idle",
+      "all_frames": false
+    }
+  ],
+  "commands": {
+    "start-pip": {
+      "suggested_key": { "default": "Alt+Shift+P", "mac": "Alt+Shift+P" },
+      "description": "启动/打开画中画台（已启动则切换“跟随当前标签”）"
+    },
+    "prev-tab": {
+      "suggested_key": { "default": "Alt+Shift+Left", "mac": "Alt+Shift+Left" },
+      "description": "画中画显示上一个标签页"
+    },
+    "next-tab": {
+      "suggested_key": { "default": "Alt+Shift+Right", "mac": "Alt+Shift+Right" },
+      "description": "画中画显示下一个标签页"
+    },
+    "close-pip": {
+      "suggested_key": { "default": "Alt+Shift+Q", "mac": "Alt+Shift+Q" },
+      "description": "关闭画中画（镜像模式会自动把内容移回原标签）"
+    }
+  },
+  "icons": {
+    "16": "icons/icon16.png",
+    "48": "icons/icon48.png",
+    "128": "icons/icon128.png"
+  }
+}
